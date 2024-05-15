@@ -8,8 +8,8 @@
  * The actual function implementation should be defined in the corresponding source file.
  *
  */
- 
-struct dorm_t  
+
+struct dorm_t
 {
   char name[20];
   unsigned short capacity;
