@@ -83,7 +83,7 @@ int main(int _argc, char **_argv)
         {
             kata = strtok(NULL, "#");
             strcpy(id, kata); 
-            kata = strtok(NULL, "#");   
+            kata = strtok(NULL, "#");    
             strcpy(dormName, kata);
             for (int i = 0; i < stdIndex; i++)
             {

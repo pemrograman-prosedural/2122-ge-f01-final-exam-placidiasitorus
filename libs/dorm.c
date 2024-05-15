@@ -32,7 +32,7 @@ void print_dorm(struct dorm_t *_dorm, int jumlah)
 
    }
 
-}
+} 
 
 void print_dorm_detail(struct dorm_t *_dorm, int jumlah)
 {
