@@ -2,7 +2,7 @@
 #include <string.h>
 #include "dorm.h"
 #include "gender.h"
-
+ 
 struct dorm_t create_dorm(char *_name, unsigned short _capacity, enum gender_t _gender){
     struct dorm_t drm;
     strcpy(drm.name, _name);

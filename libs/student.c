@@ -68,7 +68,7 @@ void print_student_detail(struct student_t *_student, int jumlah)
                 printf("%s|%s|%s|%s|%s\n", _student[x].id, _student[x].name, _student[x].year, stud_gender, _student[x].dorm->name);
             }
         }
-    }
+    } 
 }
 
 void assign_student(struct student_t *_student, struct dorm_t *_dorm, char *id, char *dorm_name)
