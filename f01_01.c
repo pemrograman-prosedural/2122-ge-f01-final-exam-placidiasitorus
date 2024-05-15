@@ -24,7 +24,7 @@ int main(int _argc, char **_argv)
 
     int should_continue = 1;  // Variable to control the loop
 
-    do {
+    while (should_continue) {
         if (fgets(input, sizeof(input), stdin) == NULL) {
             fprintf(stderr, "Failed to read input.\n");
             continue;
@@ -131,7 +131,7 @@ int main(int _argc, char **_argv)
         } else {
             fprintf(stderr, "Unknown command: %s\n", command);
         }
-    } while (should_continue);
+    }
 
     free(std);
     free(dorms);
