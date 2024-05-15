@@ -5,7 +5,7 @@
 #include "student.h"
 #include <string.h>
 #include <stdio.h>
-#include <stdlib.h> 
+#include <stdlib.h>  
 
 /**
  * @brief define your structure, enums, globally accessible variables, and function prototypes here.
