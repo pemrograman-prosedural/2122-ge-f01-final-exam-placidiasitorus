@@ -40,6 +40,6 @@ unsigned short int get_index_dorm (struct dorm_t *_dorm, unsigned short int size
     }
     return counter_drm;
     
-}
+} 
 
 

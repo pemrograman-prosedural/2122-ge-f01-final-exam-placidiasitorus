@@ -71,7 +71,7 @@ void dorm_empty(struct student_t *_student, struct dorm_t *_dorm, unsigned short
         if (_student[i].dorm != NULL && strcmp(_student[i].dorm->name, _dorm[poin].name) == 0) {
             _student[i].dorm = NULL;
         }
-    }
+    } 
 }
 
 
