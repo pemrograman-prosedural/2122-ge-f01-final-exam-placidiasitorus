@@ -7,111 +7,106 @@
 #include "./libs/dorm.h"
 #include "./libs/student.h"
 
-int main(int argc, char **argv)
-{
-    char input[100];
-    char command[50];
-    int is_initial_state = 1;
+int main(int _argc, char **_argv) { //
+    char input[100]; // input command
+    char command[50]; // command
+    int is_initial_state = 1; //    initial state
     unsigned short int size_std = 0, size_dorm = 0;
 
-    struct student_t *students = malloc(20 * sizeof(struct student_t));
-    struct dorm_t *dorms = malloc(20 * sizeof(struct dorm_t));
+    struct student_t *std = malloc(20 * sizeof(struct student_t)); //  allocate memory
+    struct dorm_t *dorms = malloc(20 * sizeof(struct dorm_t)); //   allocate memory
 
-    while (1) {
+    for (;;) {
         fflush(stdin);
-        fgets(input, sizeof(input), stdin);
+        fgets(input, sizeof(input), stdin); // get input 
         input[strcspn(input, "\r\n")] = 0;
 
         strcpy(command, strtok(input, "#"));
-        if (strcmp(command, "student-print-all-detail") == 0) {
-            student_print_detail(students, size_std, is_initial_state);
+
+        if (strcmp(command, "student-print-all-detail") == 0) { // compare command
+            student_print_detail(std, size_std, is_initial_state);
         } else if (strcmp(command, "dorm-print-all-detail") == 0) {
             print_dorm_detail(dorms, size_dorm);
         } else if (strcmp(command, "student-print-all") == 0) {
-            student_print_all(students, size_std);
+            student_print_all(std, size_std);
         } else if (strcmp(command, "dorm-print-all") == 0) {
             print_all_dorm(dorms, size_dorm);
         } else if (strcmp(command, "student-add") == 0) {
-            char id[10], name[50], year[10], gender[10];
+            char data_id[10], data_name[50], data_year[10], data_gender[10]; //   data
 
-            strcpy(id, strtok(NULL, "#"));
-            strcpy(name, strtok(NULL, "#"));
-            strcpy(year, strtok(NULL, "#"));
-            strcpy(gender, strtok(NULL, "#"));
+            strcpy(data_id, strtok(NULL, "#")); // copy data
+            strcpy(data_name, strtok(NULL, "#"));
+            strcpy(data_year, strtok(NULL, "#"));
+            strcpy(data_gender, strtok(NULL, "#"));
 
-            students[size_std] = create_student(id, name, year, gender_to_value(gender));
-            size_std++;
-            is_initial_state = 0;
-
+            std[size_std] = create_student(data_id, data_name, data_year, gender_to_value(data_gender));
+            size_std++; // increment size
+            is_initial_state = 0; // initial state
         } else if (strcmp(command, "dorm-add") == 0) {
-            char name[10], size_str[5], gender[10];
+            char dorm_name[10], dorm_size[5], dorm_gender[10];
             unsigned short int capacity = 0;
 
-            strcpy(name, strtok(NULL, "#"));
-            strcpy(size_str, strtok(NULL, "#"));
-            capacity = atoi(size_str);
-            strcpy(gender, strtok(NULL, "#"));
+            strcpy(dorm_name, strtok(NULL, "#"));
+            strcpy(dorm_size, strtok(NULL, "#"));
+            capacity = atoi(dorm_size);
+            strcpy(dorm_gender, strtok(NULL, "#"));
 
-            dorms[size_dorm] = create_dorm(name, capacity, gender_to_value(gender));
+            dorms[size_dorm] = create_dorm(dorm_name, capacity, gender_to_value(dorm_gender)); // create dorm
             size_dorm++;
+        } else if (strcmp(command, "assign-student") == 0) { //    compare command
+            char data_id[10], data_name[30];
+            strcpy(data_id, strtok(NULL, "#"));
+            strcpy(data_name, strtok(NULL, "#"));
 
-        } else if (strcmp(command, "assign-student") == 0) {
-            char id[10], dorm_name[30];
-            strcpy(id, strtok(NULL, "#"));
-            strcpy(dorm_name, strtok(NULL, "#"));
-
-            unsigned short int student_idx = 0;
-            unsigned short int dorm_idx = 0;
+            unsigned short int poin_std = 0; // point
+            unsigned short int poin_drm = 0; //     point
             int found = 0;
 
-            student_idx = get_index_student(students, size_std, id, &found);
+            poin_std = get_index_student(std, size_std, data_id, &found);
             if (found == 0) continue;
 
-            dorm_idx = get_index_dorm(dorms, size_dorm, dorm_name);
+            poin_drm = get_index_dorm(dorms, size_dorm, data_name);
 
-            assign_student(students, dorms, student_idx, dorm_idx);
-
+            assign_student(std, dorms, poin_std, poin_drm);
         } else if (strcmp(command, "dorm-empty") == 0) {
-            char dorm_name[30];
-            strcpy(dorm_name, strtok(NULL, "#"));
+            char data_name[30];
+            strcpy(data_name, strtok(NULL, "#"));
 
-            unsigned short int dorm_idx = get_index_dorm(dorms, size_dorm, dorm_name);
+            unsigned short int poin_drm = get_index_dorm(dorms, size_dorm, data_name);
 
-            dorm_empty(students, dorms, dorm_idx, size_std);
-
+            dorm_empty(std, dorms, poin_drm, size_std);
         } else if (strcmp(command, "move-student") == 0) {
-            char id[10], new_dorm_name[30];
-            strcpy(id, strtok(NULL, "#"));
-            strcpy(new_dorm_name, strtok(NULL, "#"));
+            char data_id[10], data_name[30];
+            strcpy(data_id, strtok(NULL, "#"));
+            strcpy(data_name, strtok(NULL, "#"));
 
-            unsigned short int student_idx = 0;
-            unsigned short int new_dorm_idx = 0;
+            unsigned short int poin_std = 0;
+            unsigned short int poin_drm = 0;
             int found = 0;
 
-            student_idx = get_index_student(students, size_std, id, &found);
+            poin_std = get_index_student(std, size_std, data_id, &found);
             if (found == 0) continue;
-            new_dorm_idx = get_index_dorm(dorms, size_dorm, new_dorm_name);
 
-            move_student(students, dorms, &dorms[new_dorm_idx], student_idx, new_dorm_idx);
+            poin_drm = get_index_dorm(dorms, size_dorm, data_name);
 
+            move_student(std, dorms, &dorms[poin_drm], poin_std, poin_drm);
         } else if (strcmp(command, "student-leave") == 0) {
-            char id[10];
-            strcpy(id, strtok(NULL, "#"));
+            char data_id[10];
+            strcpy(data_id, strtok(NULL, "#"));
 
-            unsigned short int student_idx = 0;
+            unsigned short int poin_std = 0;
             int found = 0;
 
-            student_idx = get_index_student(students, size_std, id, &found);
+            poin_std = get_index_student(std, size_std, data_id, &found);
             if (found == 0) continue;
 
-            student_leave(students, dorms, student_idx);
-        }
-         else if (strcmp(command, "---") == 0) {
+            student_leave(std, dorms, poin_std);
+        } else if (strcmp(command, "---") == 0) {
             break;
         }
     }
 
-    free(students);
+    free(std);
     free(dorms);
 
     return 0;

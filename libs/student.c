@@ -1,93 +1,98 @@
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include "student.h"
-#include "gender.h"
 
-struct student_t create_student(char *_id, char *_name, char *_year, enum gender_t _gender)
-{
-    struct student_t stud;
-    strcpy(stud.id, _id);
-    strcpy(stud.name, _name);
-    strcpy(stud.year, _year);
-    stud.gender = _gender;
-    stud.dorm = malloc(sizeof(struct dorm_t));
-    stud.dorm = NULL;
+void student_print_detail(struct student_t *_student, unsigned short int _size, int is_initial_state) {
+    for (int i = 0; i < _size; i++) {
+        char dorm_name[15];
+        if (_student[i].dorm == NULL && is_initial_state) {
+            strcpy(dorm_name, "unassigned");
+        } else if (_student[i].dorm == NULL) {
+            strcpy(dorm_name, "unassigned");
+        } else {
+            strcpy(dorm_name, _student[i].dorm->name);
+        }
 
-    return stud;
+        printf("%s|%s|%s|%s|%s\n", _student[i].id, _student[i].name, _student[i].year, gender_to_text(_student[i].gender), dorm_name);
+    }
 }
 
-void print_student(struct student_t *_student, int jumlah)
-{
-    char stud_gender[10] = "";
 
-    for (int x = 1; x < jumlah + 1; ++x)
-    {
-        if (_student[x].gender == 0)
-        {
-            strcpy(stud_gender, "male");
-            printf("%s|%s|%s|%s\n", _student[x].id, _student[x].name, _student[x].year, stud_gender);
+void student_print_all(struct student_t *_student, unsigned short int _size){
+    for(int i = 0 ; i < _size; i++){
+    printf("%s|%s|%s|%s\n", _student[i].id, _student[i].name, _student[i].year, gender_to_text(_student[i].gender));
+    }
+}
+
+struct student_t create_student(char *std_id, char *std_name, char *std_year, enum gender_t std_gender){
+    struct student_t std;
+    strcpy(std.id, std_id);
+    strcpy (std.name, std_name);
+    strcpy (std.year, std_year);
+    std.gender = std_gender;
+    std.dorm = NULL;
+    return std;
+}
+
+
+unsigned short int get_index_student (struct student_t *_student, unsigned short int size_std, char *_idstd, int *found){
+
+    unsigned short int counter_std, i;
+
+    for (i = 0; i < size_std; i++){
+                if(strcmp(_student[i].id, _idstd) == 0)
+                {
+                    counter_std = i;
+                    (*found) = 1;
+                    break;
+                }
+    }
+    return counter_std;
+    
+}
+
+
+void assign_student(struct student_t *_student, struct dorm_t *_dorm, unsigned short int idx_std, unsigned short int idx_drm)
+{       
+        if (_dorm[idx_drm].capacity > _dorm[idx_drm].residents_num){
+
+            if (_dorm[idx_drm].gender == _student[idx_std].gender){
+            _student[idx_std].dorm = &_dorm[idx_drm];
+            _dorm[idx_drm].residents_num++;
+            }
         }
-        else if (_student[x].gender == 1)
-        {
-            strcpy(stud_gender, "female");
-            printf("%s|%s|%s|%s\n", _student[x].id, _student[x].name, _student[x].year, stud_gender);
+}
+
+
+void dorm_empty(struct student_t *_student, struct dorm_t *_dorm, unsigned short int poin, unsigned short int size_std) {
+    if (_dorm == NULL || _student == NULL) {
+        return;
+    }
+    _dorm[poin].residents_num = 0;
+    for (int i = 0; i < size_std; i++) {
+        if (_student[i].dorm != NULL && strcmp(_student[i].dorm->name, _dorm[poin].name) == 0) {
+            _student[i].dorm = NULL;
         }
     }
 }
 
-void print_student_detail(struct student_t *_student, int jumlah)
-{
-    char stud_gender[10] = "";
 
-    for (int x = 0; x < jumlah; ++x)
-    {
-        if (_student[x].dorm == NULL)
-        {
-            if (_student[x].gender == 0)
-            {
-                strcpy(stud_gender, "male");
-                printf("%s|%s|%s|%s|left\n", _student[x].id, _student[x].name, _student[x].year, stud_gender);
-            }
-            else if (_student[x].gender == 1)
-            {
-                strcpy(stud_gender, "female");
-                printf("%s|%s|%s|%s|left\n", _student[x].id, _student[x].name, _student[x].year, stud_gender);
-            }
-        }
-        else
-        {
-            if (_student[x].gender == 0)
-            {
-                strcpy(stud_gender, "male");
-                printf("%s|%s|%s|%s|%s\n", _student[x].id, _student[x].name, _student[x].year, stud_gender, _student[x].dorm->name);
-            }
-            else if (_student[x].gender == 1)
-            {
-                strcpy(stud_gender, "female");
-                printf("%s|%s|%s|%s|%s\n", _student[x].id, _student[x].name, _student[x].year, stud_gender, _student[x].dorm->name);
-            }
-        }
-    } 
-}
+void move_student(struct student_t *_student, struct dorm_t *_dorm, struct dorm_t *new_dorm, unsigned short int idx_std, unsigned short int idx_drm) {
+    if (new_dorm->capacity <= new_dorm->residents_num) {
+        return;
+    }
 
-void assign_student(struct student_t *_student, struct dorm_t *_dorm, char *id, char *dorm_name)
-{
-    if (_dorm->capacity > _dorm->residents_num)
-    {
-        if (_student->gender == _dorm->gender)
-        {
-            _student->dorm = _dorm;
-            ++_dorm->residents_num;
-        }
+    if (_student[idx_std].dorm != NULL) {
+        _student[idx_std].dorm->residents_num--;
+        _student[idx_std].dorm = new_dorm;
+        new_dorm->residents_num++;
+    }else {
+        _student[idx_std].dorm = new_dorm;
+        new_dorm->residents_num++;
     }
 }
 
-void student_left(struct student_t *_student, struct dorm_t *_dorm)
-{
-    if(_student->dorm != NULL)
-    {
-        _dorm->residents_num--;
-        _student->dorm = NULL;
+void student_leave(struct student_t *_student, struct dorm_t *_dorm, unsigned short int idx_std) {
+    if (_student[idx_std].dorm != NULL) {
+        _student[idx_std].dorm->residents_num--;
+        _student[idx_std].dorm = NULL;
     }
 }
