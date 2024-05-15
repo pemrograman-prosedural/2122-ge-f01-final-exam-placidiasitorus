@@ -15,7 +15,7 @@ struct student_t create_student(char *_id, char *_name, char *_year, enum gender
     stud.dorm = NULL;
 
     return stud; 
-}
+} 
 
 void print_student(struct student_t *_student, int jumlah)
 {
